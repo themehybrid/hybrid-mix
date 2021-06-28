@@ -13,7 +13,9 @@ Hybrid Mix is a class for working with [Lavarel Mix](https://laravel-mix.com/). 
 Create a new instance of the `Hybrid\Mix\Mix` class, passing in a file path and file URI to your project's `public` folder.
 
 ```php
-$mix = new \Hybrid\Mix\Mix(
+use Hybrid\Mix\Mix;
+
+$mix = new Mix(
 	'public/folder/path',
 	'public/folder/uri'
 );
@@ -27,6 +29,16 @@ $mix->asset( 'css/style.css' );
 
 // JavaScript: public/folder/uri/js/app.js?id=xxx
 $mix->asset( 'js/app.js' );
+```
+
+When using the core WordPress enqueue functions, make sure to set the `$ver` parameter to `null` (not `false`). The `id` parameter added to the file URL will serve for cache busting.
+
+```php
+// Stylesheet.
+wp_enqueue_style( $handle, $mix->asset( 'css/style.css' ), $deps, null, $media );
+
+// JavaScript.
+wp_enqueue_script( $handle, $mix->asset( 'js/app.js' ), $deps, null, $in_footer );
 ```
 
 ## Copyright and License

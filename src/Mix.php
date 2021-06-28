@@ -2,6 +2,11 @@
 /**
  * Laravel Mix helper for WordPress plugins and themes.
  *
+ * This project generally assume that developers are working with the base
+ * Laravel Mix setup. It assumes there is a public folder that houses all of
+ * their build assets (e.g., `public/css`, `public/js`, etc.). The `public` path
+ * and URI can be customized and passed into the constructor.
+ *
  * @package   HybridMix
  * @author    Justin Tadlock <justintadlock@gmail.com>
  * @copyright 2021 Justin Tadlock
@@ -29,7 +34,7 @@ class Mix {
         protected $path = '';
 
         /**
-         * Directory URI to assets folder.
+         * Directory URI to public assets folder.
          *
          * @since  1.0.0
          * @access public
@@ -64,7 +69,7 @@ class Mix {
 	 * Returns the `mix-manifest.json` file if it exists or an empty string.
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @access protected
 	 * @return string
 	 */
         protected function manifest() {
@@ -80,7 +85,7 @@ class Mix {
 	 * @access public
 	 * @return array
 	 */
-        protected function mix() {
+        public function mix() {
 
 		if ( ! $this->mix && $manifest = $this->manifest() ) {
                         $this->mix = (array) json_decode(
@@ -93,7 +98,8 @@ class Mix {
 	}
 
         /**
-	 * Returns the URI to the asset file.
+	 * Returns the URI to the asset file. This method always returns the
+	 * asset file URI, regardless of whether it exists in the manifest.
 	 *
 	 * @since  1.0.0
 	 * @access public
@@ -102,16 +108,18 @@ class Mix {
 	 */
         public function asset( $path ) {
 
-                // Get the Laravel Mix manifest.
+                // Get the JSON-decoded manifest.
                 $manifest = $this->mix();
 
                 // Make sure to trim any slashes from the front of the path.
                 $path = '/' . ltrim( $path, '/' );
 
+		// Gets the path from the manifest.
                 if ( $manifest && isset( $manifest[ $path ] ) ) {
                         $path = $manifest[ $path ];
                 }
 
+		// Returns the file path appended to the public URI.
                 return untrailingslashit( $this->uri ) . $path;
         }
 }
