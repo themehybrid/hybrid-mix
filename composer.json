@@ -1,0 +1,28 @@
+{
+	"name"        : "themehybrid/hybrid-mix",
+	"description" : "Hybrid Mix is a helper class for WordPress plugins and themes using Laravel Mix.",
+	"keywords"    : [ "wordpress" ],
+	"homepage"    : "https://github.com/themehybrid/hybrid-mix",
+	"license"     : "GPL-2.0-or-later",
+	"authors"     : [
+		{
+			"name"     : "Justin Tadlock",
+			"email"    : "justintadlock@gmail.com",
+			"homepage" : "https://themehybrid.com",
+			"role"     : "Developer"
+		}
+	],
+	"support"     : {
+		"issues" : "https://github.com/themehybrid/hybrid-mix/issues",
+		"forum"  : "https://themehybrid.com/board/forums/hybrid-core"
+	},
+	"autoload"    : {
+		"psr-4" : {
+			"Hybrid\\Mix\\" : "src/"
+		}
+	},
+	"require"     : {
+		"php" : ">=5.6"
+	},
+	"minimum-stability": "dev"
+}
