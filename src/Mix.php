@@ -120,6 +120,6 @@ class Mix {
                 }
 
 		// Returns the file path appended to the public URI.
-                return untrailingslashit( $this->uri ) . $path;
+                return esc_url( untrailingslashit( $this->uri ) . $path );
         }
 }
