@@ -42,14 +42,23 @@ class Mix {
          */
         protected $uri = '';
 
-        /**
+	/**
 	 * JSON decoded array of the `mix-manifest.json` file.
 	 *
 	 * @since  1.0.0
 	 * @access public
 	 * @var    array
 	 */
-        protected $mix = [];
+	protected $manifest = [];
+
+	/**
+	 * JSON contents of the `mix-manifest.json` file.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @var    string
+	 */
+	protected $json = '';
 
         /**
 	 * Sets up the default object state.
@@ -65,36 +74,49 @@ class Mix {
                 $this->uri  = $uri;
         }
 
-        /**
+	/**
 	 * Returns the `mix-manifest.json` file if it exists or an empty string.
 	 *
 	 * @since  1.0.0
 	 * @access protected
 	 * @return string
 	 */
-        protected function manifest() {
+	protected function manifestPath() {
                 $manifest = trailingslashit( $this->path ) . 'mix-manifest.json';
 
                 return file_exists( $manifest ) ? $manifest : '';
-        }
+	}
 
-        /**
-	 * Returns an array of the JSON-decoded `mix-manifest.json`.
+	/**
+	 * Returns the manifest as JSON.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return string
+	 */
+	public function toJson() {
+
+		if ( ! $this->json && $path = $this->manifestPath() ) {
+			$this->json = file_get_contents( $path );
+		}
+
+		return $this->json;
+	}
+
+	/**
+	 * Returns the manifest as a PHP array.
 	 *
 	 * @since  1.0.0
 	 * @access public
 	 * @return array
 	 */
-        public function mix() {
+	public function toArray() {
 
-		if ( ! $this->mix && $manifest = $this->manifest() ) {
-                        $this->mix = (array) json_decode(
-                                file_get_contents( $manifest ),
-                                true
-                        );
-                }
+		if ( ! $this->manifest && $json = $this->toJson() ) {
+			$this->manifest = (array) json_decode( $json, true );
+		}
 
-		return $this->mix;
+		return $this->manifest;
 	}
 
         /**
@@ -109,10 +131,10 @@ class Mix {
         public function asset( $path ) {
 
                 // Get the JSON-decoded manifest.
-                $manifest = $this->mix();
+                $manifest = $this->toArray();
 
-                // Make sure to trim any slashes from the front of the path.
-                $path = '/' . ltrim( $path, '/' );
+		// Make sure to trim any slashes from the front of the path.
+		$path = '/' . ltrim( $path, '/' );
 
 		// Gets the path from the manifest.
                 if ( $manifest && isset( $manifest[ $path ] ) ) {
